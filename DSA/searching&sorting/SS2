@@ -1,0 +1,262 @@
+import math
+
+# ============================================================
+# 1. GUESS NUMBER
+# ============================================================
+
+class GuessNumberSolution:
+    def guessNumber(self, n, guess):
+        left = 1
+        right = n
+
+        while left <= right:
+            mid = left + (right - left) // 2
+            result = guess(mid)
+
+            if result == 0:
+                return mid
+            elif result == 1:
+                left = mid + 1
+            else:
+                right = mid - 1
+
+        return -1
+
+
+# ============================================================
+# 2. ARRANGE COINS
+# ============================================================
+
+class ArrangeCoinsSolution:
+    def arrangeCoins(self, n):
+        left = 1
+        right = n
+
+        while left <= right:
+            mid = left + (right - left) // 2
+            coins = mid * (mid + 1) // 2
+
+            if coins == n:
+                return mid
+            elif coins < n:
+                left = mid + 1
+            else:
+                right = mid - 1
+
+        return right
+
+
+# ============================================================
+# 3. PEAK INDEX IN A MOUNTAIN ARRAY
+# ============================================================
+
+class PeakIndexSolution:
+    def peakIndexInMountainArray(self, arr):
+        left = 0
+        right = len(arr) - 1
+
+        while left < right:
+            mid = left + (right - left) // 2
+
+            if arr[mid] < arr[mid + 1]:
+                left = mid + 1
+            else:
+                right = mid
+
+        return left
+
+
+# ============================================================
+# 4. SINGLE ELEMENT IN A SORTED ARRAY
+# ============================================================
+
+class SingleNonDuplicateSolution:
+    def singleNonDuplicate(self, nums):
+        left = 0
+        right = len(nums) - 1
+
+        while left < right:
+            mid = left + (right - left) // 2
+
+            if mid % 2 == 1:
+                mid -= 1
+
+            if nums[mid] == nums[mid + 1]:
+                left = mid + 2
+            else:
+                right = mid
+
+        return nums[left]
+
+
+# ============================================================
+# 5. FIND SMALLEST LETTER GREATER THAN TARGET
+# ============================================================
+
+class NextGreatestLetterSolution:
+    def nextGreatestLetter(self, letters, target):
+        left = 0
+        right = len(letters) - 1
+
+        while left <= right:
+            mid = left + (right - left) // 2
+
+            if letters[mid] <= target:
+                left = mid + 1
+            else:
+                right = mid - 1
+
+        return letters[left % len(letters)]
+
+
+# ============================================================
+# 6. KOKO EATING BANANAS
+# ============================================================
+
+class KokoEatingSpeedSolution:
+    def minEatingSpeed(self, piles, h):
+        left = 1
+        right = max(piles)
+
+        while left <= right:
+            mid = left + (right - left) // 2
+
+            hours = 0
+            for pile in piles:
+                hours += (pile + mid - 1) // mid
+
+            if hours <= h:
+                right = mid - 1
+            else:
+                left = mid + 1
+
+        return left
+
+
+# ============================================================
+# 7. K-TH SMALLEST PAIR DISTANCE
+# ============================================================
+
+class SmallestDistancePairSolution:
+    def smallestDistancePair(self, nums, k):
+        nums.sort()
+
+        left = 0
+        right = nums[-1] - nums[0]
+
+        while left < right:
+            mid = left + (right - left) // 2
+
+            count = 0
+            j = 0
+
+            for i in range(len(nums)):
+                j = max(j, i + 1)
+
+                while j < len(nums) and nums[j] - nums[i] <= mid:
+                    j += 1
+
+                count += j - i - 1
+
+            if count >= k:
+                right = mid
+            else:
+                left = mid + 1
+
+        return left
+
+
+# ============================================================
+# 8. CAPACITY TO SHIP PACKAGES WITHIN D DAYS
+# ============================================================
+
+class ShipWithinDaysSolution:
+    def shipWithinDays(self, weights, days):
+        left = max(weights)
+        right = sum(weights)
+
+        while left <= right:
+            mid = left + (right - left) // 2
+
+            required_days = 1
+            current_weight = 0
+
+            for weight in weights:
+                if current_weight + weight > mid:
+                    required_days += 1
+                    current_weight = weight
+                else:
+                    current_weight += weight
+
+            if required_days <= days:
+                right = mid - 1
+            else:
+                left = mid + 1
+
+        return left
+
+
+# ============================================================
+# 9. SPLIT ARRAY LARGEST SUM
+# ============================================================
+
+class SplitArraySolution:
+    def splitArray(self, nums, k):
+        left = max(nums)
+        right = sum(nums)
+
+        while left <= right:
+            mid = left + (right - left) // 2
+
+            parts = 1
+            current_sum = 0
+
+            for num in nums:
+                if current_sum + num > mid:
+                    parts += 1
+                    current_sum = num
+                else:
+                    current_sum += num
+
+            if parts <= k:
+                right = mid - 1
+            else:
+                left = mid + 1
+
+        return left
+
+
+# ============================================================
+# 10. MINIMIZE MAXIMUM GAS DISTANCE
+# ============================================================
+
+class MinmaxGasDistanceSolution:
+    def minmaxGasDist(self, stations, k):
+        left = 0.0
+        right = float(stations[-1] - stations[0])
+
+        for _ in range(100):
+            mid = (left + right) / 2.0
+            required = 0
+
+            for i in range(len(stations) - 1):
+                gap = stations[i + 1] - stations[i]
+                ratio = gap / mid
+
+                nearest = round(ratio)
+                if abs(ratio - nearest) <= 1e-12 * max(1.0, abs(ratio)):
+                    needed = max(0, nearest - 1)
+                else:
+                    needed = math.ceil(ratio) - 1
+
+                required += needed
+
+                if required > k:
+                    break
+
+            if required <= k:
+                right = mid
+            else:
+                left = mid
+
+        return right
